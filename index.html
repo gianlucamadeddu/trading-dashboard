@@ -904,18 +904,19 @@
         function getFilteredTrades() {
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const todayString = today.toISOString().split('T')[0];
             
             return trades.filter(trade => {
-                const tradeDate = new Date(trade.date);
-                
                 switch(currentPeriod) {
                     case 'daily':
-                        return tradeDate.getTime() === today.getTime();
+                        return trade.date === todayString;
                     case 'weekly':
                         const weekStart = new Date(today);
                         weekStart.setDate(today.getDate() - today.getDay());
-                        return tradeDate >= weekStart;
+                        const weekStartString = weekStart.toISOString().split('T')[0];
+                        return trade.date >= weekStartString;
                     case 'monthly':
+                        const tradeDate = new Date(trade.date + 'T00:00:00');
                         return tradeDate.getMonth() === today.getMonth() && 
                                tradeDate.getFullYear() === today.getFullYear();
                     default:
